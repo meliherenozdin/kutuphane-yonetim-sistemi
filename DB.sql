@@ -24,7 +24,7 @@ CREATE TABLE Kitap (
     ISBN VARCHAR(13) UNIQUE NOT NULL,       -- Kitabın benzersiz ISBN numarası
     BasimYili DATE NOT NULL,                -- Kitabın basım yılı
     Yayinevi VARCHAR(255),                  -- Kitabı yayınlayan yayınevi
-    Adet INT NOT NULL CHECK ("ADET" >= 0),                      -- Kitabın mevcut adedi
+    Adet INT NOT NULL CHECK ("adet" >= 0),                      -- Kitabın mevcut adedi
     KategoriID INT REFERENCES Kategori(KategoriID) ON DELETE SET NULL, -- Kitabın kategorisi
     YazarID INT REFERENCES Yazar(YazarID) ON DELETE SET NULL,           -- Kitabın yazarı
     RafNo VARCHAR(50) REFERENCES Raf(RafNo) ON DELETE SET NULL          -- Kitabın bulunduğu raf
