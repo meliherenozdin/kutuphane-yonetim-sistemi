@@ -1,82 +1,89 @@
+-- Kategori tablosunu oluşturuyor: Kitapların türlerini tutar (örneğin Roman, Bilim).
 CREATE TABLE Kategori (
-    KategoriID SERIAL PRIMARY KEY,
-    Turu VARCHAR(255) NOT NULL
+    KategoriID SERIAL PRIMARY KEY, -- Otomatik artan birincil anahtar
+    Turu VARCHAR(255) NOT NULL    -- Kategorinin adı (zorunlu alan)
 );
 
+-- Yazar tablosunu oluşturuyor: Kitap yazarlarının bilgilerini tutar.
 CREATE TABLE Yazar (
-    YazarID SERIAL PRIMARY KEY,
-    YazarAdi VARCHAR(255) NOT NULL,
-    YazarSoyad VARCHAR(255) NOT NULL
+    YazarID SERIAL PRIMARY KEY,   -- Otomatik artan birincil anahtar
+    YazarAdi VARCHAR(255) NOT NULL,  -- Yazarın adı (zorunlu alan)
+    YazarSoyad VARCHAR(255) NOT NULL -- Yazarın soyadı (zorunlu alan)
 );
 
-
+-- Raf tablosunu oluşturuyor: Kütüphane raflarının bilgilerini tutar.
 CREATE TABLE Raf (
-    RafNo VARCHAR(50) PRIMARY KEY,
-    Bolum VARCHAR(255) NOT NULL
+    RafNo VARCHAR(50) PRIMARY KEY, -- Raf numarası (birincil anahtar)
+    Bolum VARCHAR(255) NOT NULL    -- Rafın bulunduğu bölümün adı (zorunlu alan)
 );
 
+-- Kitap tablosunu oluşturuyor: Kütüphanedeki kitapların bilgilerini tutar.
 CREATE TABLE Kitap (
-    KitapID SERIAL PRIMARY KEY,
-    KitapAdi VARCHAR(255) NOT NULL,
-    ISBN VARCHAR(13) UNIQUE NOT NULL,
-    BasimYili DATE NOT NULL,
-    Yayinevi VARCHAR(255),
-    Adet INT NOT NULL,
-    KategoriID INT REFERENCES Kategori(KategoriID) ON DELETE SET NULL,
-    YazarID INT REFERENCES Yazar(YazarID) ON DELETE SET NULL,
-    RafNo VARCHAR(50) REFERENCES Raf(RafNo) ON DELETE SET NULL
+    KitapID SERIAL PRIMARY KEY,             -- Otomatik artan birincil anahtar
+    KitapAdi VARCHAR(255) NOT NULL,         -- Kitap adı (zorunlu alan)
+    ISBN VARCHAR(13) UNIQUE NOT NULL,       -- Kitabın benzersiz ISBN numarası
+    BasimYili DATE NOT NULL,                -- Kitabın basım yılı
+    Yayinevi VARCHAR(255),                  -- Kitabı yayınlayan yayınevi
+    Adet INT NOT NULL,                      -- Kitabın mevcut adedi
+    KategoriID INT REFERENCES Kategori(KategoriID) ON DELETE SET NULL, -- Kitabın kategorisi
+    YazarID INT REFERENCES Yazar(YazarID) ON DELETE SET NULL,           -- Kitabın yazarı
+    RafNo VARCHAR(50) REFERENCES Raf(RafNo) ON DELETE SET NULL          -- Kitabın bulunduğu raf
 );
 
+-- Üye tablosunu oluşturuyor: Kütüphaneye kayıtlı üyelerin bilgilerini tutar.
 CREATE TABLE Uye (
-    UyeID SERIAL PRIMARY KEY,
-    UyeAdi VARCHAR(255) NOT NULL,
-    UyeSoyad VARCHAR(255) NOT NULL,
-    Email VARCHAR(255) UNIQUE,
-    TelNo VARCHAR(15) UNIQUE,
-    Adres TEXT
+    UyeID SERIAL PRIMARY KEY,         -- Otomatik artan birincil anahtar
+    UyeAdi VARCHAR(255) NOT NULL,     -- Üyenin adı (zorunlu alan)
+    UyeSoyad VARCHAR(255) NOT NULL,   -- Üyenin soyadı (zorunlu alan)
+    Email VARCHAR(255) UNIQUE,        -- Üyenin benzersiz e-posta adresi
+    TelNo VARCHAR(15) UNIQUE,         -- Üyenin benzersiz telefon numarası
+    Adres TEXT                        -- Üyenin adres bilgisi
 );
 
+-- Personel tablosunu oluşturuyor: Kütüphane çalışanlarının bilgilerini tutar.
 CREATE TABLE Personel (
-    PersonelID SERIAL PRIMARY KEY,
-    PerAdi VARCHAR(255) NOT NULL,
-    PerSoyad VARCHAR(255) NOT NULL,
-    TelNo VARCHAR(15) UNIQUE,
-    Email VARCHAR(255) UNIQUE,
-    IsBaslamaTarih DATE DEFAULT CURRENT_DATE
+    PersonelID SERIAL PRIMARY KEY,     -- Otomatik artan birincil anahtar
+    PerAdi VARCHAR(255) NOT NULL,      -- Personelin adı (zorunlu alan)
+    PerSoyad VARCHAR(255) NOT NULL,    -- Personelin soyadı (zorunlu alan)
+    TelNo VARCHAR(15) UNIQUE,          -- Personelin telefon numarası
+    Email VARCHAR(255) UNIQUE,         -- Personelin e-posta adresi
+    IsBaslamaTarih DATE DEFAULT CURRENT_DATE -- Personelin işe başlama tarihi
 );
 
+-- Ödünç tablosunu oluşturuyor: Kitap ödünç alma işlemlerini tutar.
 CREATE TABLE Odunc (
-    OduncID SERIAL PRIMARY KEY,
-    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE,
-    KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE,
-    OduncAlmaTarih DATE NOT NULL DEFAULT CURRENT_DATE,
-    GercekTeslimTarih DATE
+    OduncID SERIAL PRIMARY KEY,                -- Otomatik artan birincil anahtar
+    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE, -- Ödünç alan üye
+    KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE, -- Ödünç alınan kitap
+    OduncAlmaTarih DATE NOT NULL DEFAULT CURRENT_DATE,       -- Ödünç alma tarihi
+    GercekTeslimTarih DATE                                   -- Kitabın teslim tarihi
 );
 
+-- Ceza tablosunu oluşturuyor: Ödünç alma işlemlerinden kaynaklanan cezaları tutar.
 CREATE TABLE Ceza (
-    CezaID SERIAL PRIMARY KEY,                  
-    OduncID INT REFERENCES Odunc(OduncID) ON DELETE CASCADE,
-    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE,  
-    CezaMiktar DECIMAL(10, 2) NOT NULL,         
-    CezaTarih DATE NOT NULL DEFAULT CURRENT_DATE 
+    CezaID SERIAL PRIMARY KEY,                 -- Otomatik artan birincil anahtar
+    OduncID INT REFERENCES Odunc(OduncID) ON DELETE CASCADE, -- Ceza ile ilişkili ödünç işlemi
+    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE,       -- Ceza alan üye
+    CezaMiktar DECIMAL(10, 2) NOT NULL,         -- Ceza miktarı (örneğin, 5.00 TL)
+    CezaTarih DATE NOT NULL DEFAULT CURRENT_DATE -- Ceza tarihi
 );
 
-
+-- Rezervasyon tablosunu oluşturuyor: Üyelerin kitap rezervasyonlarını tutar.
 CREATE TABLE Rezervasyon (
-    RezervasyonID SERIAL PRIMARY KEY,                   
-    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE,  
-    KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE, 
-    RezervasyonTarih DATE NOT NULL DEFAULT CURRENT_DATE, 
-    Durum VARCHAR(50) DEFAULT 'Boşta',                  
-    UNIQUE (KitapID, Durum)                              
+    RezervasyonID SERIAL PRIMARY KEY,                   -- Otomatik artan birincil anahtar
+    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE,  -- Rezervasyonu yapan üye
+    KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE, -- Rezerve edilen kitap
+    RezervasyonTarih DATE NOT NULL DEFAULT CURRENT_DATE, -- Rezervasyon tarihi
+    Durum VARCHAR(50) DEFAULT 'Boşta',                  -- Rezervasyon durumu
+    UNIQUE (KitapID, Durum)                             -- Kitap için yalnızca bir aktif rezervasyon
 );
 
-
+-- Bağış tablosunu oluşturuyor: Üyelerin kitap bağışlarını tutar.
 CREATE TABLE Bagis (
-    BagisID SERIAL PRIMARY KEY,               
-    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE, 
-    KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE, 
-    BagisTarih DATE NOT NULL DEFAULT CURRENT_DATE 
+    BagisID SERIAL PRIMARY KEY,              -- Otomatik artan birincil anahtar
+    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE, -- Bağış yapan üye
+    KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE, -- Bağışlanan kitap
+    BagisTarih DATE NOT NULL DEFAULT CURRENT_DATE -- Bağış tarihi
 );
 
 
