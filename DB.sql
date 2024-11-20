@@ -11,7 +11,10 @@ CREATE TABLE Yazar (
     YazarSoyad VARCHAR(255) NOT NULL -- Yazarın soyadı (zorunlu alan)
 );
 
+<<<<<<< Updated upstream
 -- Raf tablosunu oluşturuyor: Kütüphane raflarının bilgilerini tutar.
+=======
+>>>>>>> Stashed changes
 CREATE TABLE Raf (
     RafNo VARCHAR(50) PRIMARY KEY, -- Raf numarası (birincil anahtar)
     Bolum VARCHAR(255) NOT NULL    -- Rafın bulunduğu bölümün adı (zorunlu alan)
@@ -68,6 +71,7 @@ CREATE TABLE Ceza (
     CezaTarih DATE NOT NULL DEFAULT CURRENT_DATE -- Ceza tarihi
 );
 
+<<<<<<< Updated upstream
 -- Rezervasyon tablosunu oluşturuyor: Üyelerin kitap rezervasyonlarını tutar.
 CREATE TABLE Rezervasyon (
     RezervasyonID SERIAL PRIMARY KEY,                   -- Otomatik artan birincil anahtar
@@ -76,14 +80,30 @@ CREATE TABLE Rezervasyon (
     RezervasyonTarih DATE NOT NULL DEFAULT CURRENT_DATE, -- Rezervasyon tarihi
     Durum VARCHAR(50) DEFAULT 'Boşta',                  -- Rezervasyon durumu
     UNIQUE (KitapID, Durum)                             -- Kitap için yalnızca bir aktif rezervasyon
+=======
+CREATE TABLE Rezervasyon (
+    RezervasyonID SERIAL PRIMARY KEY,                   
+    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE,  
+    KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE, 
+    RezervasyonTarih DATE NOT NULL DEFAULT CURRENT_DATE, 
+    Durum VARCHAR(50) DEFAULT 'Boşta',
+    UNIQUE (KitapID, Durum)
+>>>>>>> Stashed changes
 );
 
 -- Bağış tablosunu oluşturuyor: Üyelerin kitap bağışlarını tutar.
 CREATE TABLE Bagis (
+<<<<<<< Updated upstream
     BagisID SERIAL PRIMARY KEY,              -- Otomatik artan birincil anahtar
     UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE, -- Bağış yapan üye
     KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE, -- Bağışlanan kitap
     BagisTarih DATE NOT NULL DEFAULT CURRENT_DATE -- Bağış tarihi
+=======
+    BagisID SERIAL PRIMARY KEY,
+    UyeID INT REFERENCES Uye(UyeID) ON DELETE CASCADE, 
+    KitapID INT REFERENCES Kitap(KitapID) ON DELETE CASCADE, 
+    BagisTarih DATE NOT NULL DEFAULT CURRENT_DATE 
+>>>>>>> Stashed changes
 );
 
 
