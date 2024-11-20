@@ -97,6 +97,18 @@ INSERT INTO Yazar (YazarAdi, YazarSoyad) VALUES
 ('Stefan', 'Zweig'),
 ('J.R.R.', 'Tolkien');
 
+INSERT INTO Raf (RafNo, Bolum) VALUES
+('R1', 'Roman Bölümü'),
+('R2', 'Fantastik Bölümü'),
+('R3', 'Bilim Kurgu Bölümü'),
+('R4', 'Tarih Bölümü'),
+('R5', 'Sanat Bölümü'),
+('R6', 'Teknoloji Bölümü'),
+('R7', 'Çocuk Kitapları Bölümü'),
+('R8', 'Edebiyat Bölümü'),
+('R9', 'Felsefe Bölümü'),
+('R10', 'Psikoloji Bölümü');
+
 INSERT INTO Kitap (KitapAdi, ISBN, BasimYili, Yayinevi, Adet, KategoriID, YazarID, RafNo) VALUES
 ('Kar', '9789750800000', '2002-01-01', 'YKY', 5, 1, 1, 'R1'),
 ('Harry Potter ve Felsefe Taşı', '9780545582889', '1997-06-26', 'Scholastic', 10, 10, 3, 'R2'),
@@ -180,16 +192,3 @@ INSERT INTO Bagis (KitapID, BagisTarih) VALUES
 (8, '2024-10-15'),
 (9, '2024-10-16'),
 (10, '2024-10-17');
-
-INSERT INTO Raf (RafNo, Bolum) VALUES
-('R1', 'Roman Bölümü'),
-('R2', 'Fantastik Bölümü'),
-('R3', 'Bilim Kurgu Bölümü'),
-('R4', 'Tarih Bölümü'),
-('R5', 'Sanat Bölümü'),
-('R6', 'Teknoloji Bölümü'),
-('R7', 'Çocuk Kitapları Bölümü'),
-('R8', 'Edebiyat Bölümü'),
-('R9', 'Felsefe Bölümü'),
-('R10', 'Psikoloji Bölümü');
-
