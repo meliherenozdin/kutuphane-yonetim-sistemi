@@ -206,4 +206,3 @@ INSERT INTO Bagis (KitapID, UyeID, BagisTarih) VALUES
 (8, 8,'2024-10-15'),
 (9, 7,'2024-10-16'),
 (10, 10,'2024-10-17');
-
