@@ -133,7 +133,8 @@ INSERT INTO Kitap (KitapAdi, ISBN, BasimYili, Yayinevi, Adet, KategoriID, YazarI
 ('Körlük', '9780156007757', '1995-10-01', 'Harvest', 8, 8, 8, 'R7'),
 ('Monte Cristo Kontu', '9780140449266', '1844-01-01', 'Penguin', 9, 1, 9, 'R8'),
 ('Silmarillion', '9780618391110', '1977-01-01', 'Houghton', 6, 10, 10, 'R9'),
-('Kumral Ada Mavi Tuna', '9789750809012', '1997-06-01', 'YKY', 2, 1, 1, 'R10');
+('Kumral Ada Mavi Tuna', '9789750809012', '1997-06-01', 'YKY', 2, 1, 1, 'R10'),
+('Suç Ve Ceza','9789750809038','1981-03-19','Harper',3,1,4,'R1');
 
 INSERT INTO Uye (UyeAdi, UyeSoyad, Email, TelNo, Adres) VALUES
 ('Ahmet', 'Demir', 'ahmet@gmail.com', '05551112233', 'Ankara'),
