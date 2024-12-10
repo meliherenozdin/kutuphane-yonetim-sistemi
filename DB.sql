@@ -171,17 +171,17 @@ INSERT INTO Odunc (UyeID, KitapID, OduncAlmaTarih) VALUES
 (9, 9, '2024-11-16'),
 (10, 10, '2024-11-17');
 
-INSERT INTO Ceza (OduncID, CezaMiktar) VALUES
-(1, 5.00),
-(2, 10.00),
-(3, 3.00),
-(4, 0.00),
-(5, 0.00),
-(6, 7.00),
-(7, 2.50),
-(8, 1.00),
-(9, 0.00),
-(10, 0.00);
+INSERT INTO Ceza (OduncID, UyeID, CezaMiktar) VALUES
+(1, 10, 5.00),
+(2, 9, 10.00),
+(3, 5, 3.00),
+(4, 4, 0.00),
+(5, 3, 0.00),
+(6, 8, 7.00),
+(7, 7, 2.50),
+(8, 6, 1.00),
+(9, 2, 0.00),
+(10, 1, 0.00);
 
 INSERT INTO Rezervasyon (UyeID, KitapID, RezervasyonTarih) VALUES
 (1, 5, '2024-11-01'),
