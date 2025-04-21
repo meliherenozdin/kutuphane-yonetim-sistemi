@@ -9,6 +9,9 @@ import com.ekip.yakupmelih.library_manage_system.repository.UyeRepository;
 
 import java.time.LocalDate;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class BagisService {
 
     private final BagisRepository bagisRepository;

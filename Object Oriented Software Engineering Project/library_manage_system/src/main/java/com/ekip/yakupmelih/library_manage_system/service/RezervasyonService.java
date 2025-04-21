@@ -9,13 +9,17 @@ import com.ekip.yakupmelih.library_manage_system.repository.UyeRepository;
 
 import java.time.LocalDate;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class RezervasyonService {
 
     private final RezervasyonRepository rezervasyonRepository;
     private final KitapRepository kitapRepository;
     private final UyeRepository uyeRepository;
 
-    public RezervasyonService(RezervasyonRepository rezervasyonRepository, KitapRepository kitapRepository, UyeRepository uyeRepository) {
+    public RezervasyonService(RezervasyonRepository rezervasyonRepository, KitapRepository kitapRepository,
+            UyeRepository uyeRepository) {
         this.rezervasyonRepository = rezervasyonRepository;
         this.kitapRepository = kitapRepository;
         this.uyeRepository = uyeRepository;
