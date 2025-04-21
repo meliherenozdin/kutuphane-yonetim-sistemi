@@ -28,6 +28,10 @@ public class KitapService {
         return kitapRepository.findByIsbn(isbn);
     }
 
+    public void guncelle(Kitap kitap) {
+        kitapRepository.save(kitap);
+    }
+    
     public Kitap kitapEkle(Kitap kitap) {
         return kitapRepository.save(kitap);
     }

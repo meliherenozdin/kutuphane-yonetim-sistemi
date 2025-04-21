@@ -1,19 +1,25 @@
 package com.ekip.yakupmelih.library_manage_system.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.Scanner;
 
+@Component
 public class KullaniciController {
 
-    public static void girisEkrani() {
+    @Autowired
+    private KullaniciFactory kullaniciFactory;
+
+    public void girisEkrani() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("=== Kütüphane Giriş Ekranı ===");
         System.out.println("1. Üye Girişi");
         System.out.println("2. Personel Girişi");
         System.out.print("Seçiminiz: ");
         String secim = scanner.nextLine();
-        scanner.close();
 
-        Kullanici kullanici = KullaniciFactory.olustur(secim);
+        Kullanici kullanici = kullaniciFactory.olustur(secim);
         if (kullanici != null) {
             kullanici.menu();
         } else {
@@ -23,15 +29,5 @@ public class KullaniciController {
 
     public interface Kullanici {
         void menu();
-    }
-
-    public static class KullaniciFactory {
-        public static Kullanici olustur(String secim) {
-            return switch (secim) {
-                case "1" -> new UyeController();
-                case "2" -> new PersonelController();
-                default -> null;
-            };
-        }
     }
 }

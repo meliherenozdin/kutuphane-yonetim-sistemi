@@ -2,6 +2,9 @@ package com.ekip.yakupmelih.library_manage_system.controller;
 
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.ekip.yakupmelih.library_manage_system.repository.KitapRepository;
 import com.ekip.yakupmelih.library_manage_system.service.BagisService;
 import com.ekip.yakupmelih.library_manage_system.service.CezaService;
@@ -12,24 +15,46 @@ import com.ekip.yakupmelih.library_manage_system.model.Uye;
 import com.ekip.yakupmelih.library_manage_system.repository.CezaRepository;
 
 
-
+@Component
 public class UyeController implements KullaniciController.Kullanici {
 
-    private final KitapService kitapService;
-    private final Uye uye;
-    private final CezaService cezaService;
-    private final BagisService bagisService;
-    private final OduncService oduncService;
-    private final RezervasyonService rezervasyonService;
+    private Uye uye;
 
-    public UyeController() {
-        this.uye = uye;
-        this.kitapService = new KitapService(new KitapRepository());
-        this.cezaService = new CezaService(new CezaRepository());
-        this.bagisService = new BagisService(new BagisRepository());
-        this.oduncService = new OduncService(new OduncRepository());
-        this.rezervasyonService = new RezervasyonService(new RezervasyonRepository());
+    @Autowired
+    private final KitapService kitapService;
+
+    @Autowired
+    private final CezaService cezaService;
+
+    @Autowired
+    private final BagisService bagisService;
+
+    @Autowired
+    private final OduncService oduncService;
+    
+    @Autowired
+    private final RezervasyonService rezervasyonService;
+    
+
+    
+    public UyeController(
+            KitapService kitapService,
+            CezaService cezaService,
+            BagisService bagisService,
+            OduncService oduncService,
+            RezervasyonService rezervasyonService
+    ) {
+        this.kitapService = kitapService;
+        this.cezaService = cezaService;
+        this.bagisService = bagisService;
+        this.oduncService = oduncService;
+        this.rezervasyonService = rezervasyonService;
     }
+
+    public void setUye(Uye uye) {
+    this.uye = uye;
+}
+
 
     @Override
     public void menu() {
@@ -38,14 +63,13 @@ public class UyeController implements KullaniciController.Kullanici {
             System.out.println("\n=== Üye Menü ===");
             System.out.println("1. Kitapları Listele");
             System.out.println("2. Kitap Ara");
-            System.out.println("3. Ceza Bilgilerini Görüntüle");
-            System.out.println("4. Kitap Bağışla");
-            System.out.println("5. Ödünç Alınan Kitaplar");
-            System.out.println("6. Kitap Rezerve Et");
+            // System.out.println("3. Ceza Bilgilerini Görüntüle");
+            // System.out.println("4. Kitap Bağışla");
+            // System.out.println("5. Ödünç Alınan Kitaplar");
+            // System.out.println("6. Kitap Rezerve Et");
             System.out.println("7. Çıkış");
             System.out.print("Seçiminiz: ");
             String secim = scanner.nextLine();
-            scanner.close();
 
             switch (secim) {
                 case "1" -> kitaplariListele();
