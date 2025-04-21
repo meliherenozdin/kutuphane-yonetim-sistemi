@@ -8,6 +8,7 @@ import com.ekip.yakupmelih.library_manage_system.service.CezaService;
 import com.ekip.yakupmelih.library_manage_system.service.KitapService;
 import com.ekip.yakupmelih.library_manage_system.service.OduncService;
 import com.ekip.yakupmelih.library_manage_system.service.RezervasyonService;
+import com.ekip.yakupmelih.library_manage_system.model.Uye;
 import com.ekip.yakupmelih.library_manage_system.repository.CezaRepository;
 
 
@@ -15,12 +16,14 @@ import com.ekip.yakupmelih.library_manage_system.repository.CezaRepository;
 public class UyeController implements KullaniciController.Kullanici {
 
     private final KitapService kitapService;
+    private final Uye uye;
     private final CezaService cezaService;
     private final BagisService bagisService;
     private final OduncService oduncService;
     private final RezervasyonService rezervasyonService;
 
     public UyeController() {
+        this.uye = uye;
         this.kitapService = new KitapService(new KitapRepository());
         this.cezaService = new CezaService(new CezaRepository());
         this.bagisService = new BagisService(new BagisRepository());
@@ -79,9 +82,8 @@ public class UyeController implements KullaniciController.Kullanici {
     
 
     private void cezalar() {
-        int uyeId = 1; // gerçek uygulamada giriş yapan üyeden alınmalı
-    
-        cezaService.getCezaByUyeId(uyeId)
+
+        cezaService.getCezaByUyeId(uye.getUyeID())
             .forEach(ceza -> System.out.printf("Ceza: %.2f ₺ - Tarih: %s%n",
                 ceza.getCezaMiktar(), ceza.getCezaTarih()));
     }
@@ -92,22 +94,19 @@ public class UyeController implements KullaniciController.Kullanici {
         System.out.print("Bağışlanan kitabın ID'sini girin: ");
         int kitapId = Integer.parseInt(scanner.nextLine());
     
-        int uyeId = 1; // yine giriş yapan kullanıcıdan alınmalı
-    
-        bagisService.bagisKaydet(uyeId, kitapId);
+        bagisService.bagisKaydet(uye.getUyeID(), kitapId);
         System.out.println("Bağış işlemi tamamlandı.");
     }
     
 
     private void odunclariGoruntule() {
-        int uyeId = 1;
-    
-        oduncService.getOduncByUyeId(uyeId)
+        oduncService.getOduncByUyeId(uye.getUyeID())
             .forEach(odunc -> System.out.printf("Kitap ID: %d - Alınma: %s - Teslim: %s%n",
                 odunc.getKitap().getKitapID(),
                 odunc.getOduncAlmaTarih(),
                 odunc.getGercekTeslimTarih()));
     }
+    
     
 
     private void rezervasyonYap() {
@@ -115,10 +114,9 @@ public class UyeController implements KullaniciController.Kullanici {
         System.out.print("Rezerve edilecek kitabın ID'sini girin: ");
         int kitapId = Integer.parseInt(scanner.nextLine());
     
-        int uyeId = 1;
-    
-        rezervasyonService.kaydet(uyeId, kitapId);
+        rezervasyonService.kaydet(uye.getUyeID(), kitapId);
         System.out.println("Rezervasyon tamamlandı.");
     }
+    
     
 }
