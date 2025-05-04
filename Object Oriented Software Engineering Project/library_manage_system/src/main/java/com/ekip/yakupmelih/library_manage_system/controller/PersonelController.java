@@ -1,6 +1,7 @@
 package com.ekip.yakupmelih.library_manage_system.controller;
 
 import com.ekip.yakupmelih.library_manage_system.model.Kitap;
+import com.ekip.yakupmelih.library_manage_system.model.Personel;
 import com.ekip.yakupmelih.library_manage_system.repository.KategoriRepository;
 import com.ekip.yakupmelih.library_manage_system.repository.RafRepository;
 import com.ekip.yakupmelih.library_manage_system.repository.YazarRepository;
@@ -17,18 +18,23 @@ public class PersonelController implements KullaniciController.Kullanici {
 
     @Autowired
     private KitapService kitapService;
-    
+
     @Autowired
     private KategoriRepository kategoriRepository;
 
     @Autowired
     private YazarRepository yazarRepository;
 
-    @Autowired  
+    @Autowired
     private RafRepository rafRepository;
 
-
     private final Scanner scanner = new Scanner(System.in);
+
+    private Personel personel;
+
+    public void setPersonel(Personel personel) {
+        this.personel = personel;
+    }
 
     @Override
     public void menu() {
@@ -69,10 +75,10 @@ public class PersonelController implements KullaniciController.Kullanici {
         String basimStr = scanner.nextLine();
 
         try {
-        kitap.setBasimYili(LocalDate.parse(basimStr)); // doğru formatta girildiyse
+            kitap.setBasimYili(LocalDate.parse(basimStr));
         } catch (Exception e) {
-        System.out.println("Hatalı tarih formatı! Lütfen yyyy-MM-dd şeklinde girin.");
-        return; // veya kullanıcıya tekrar deneme şansı verebilirsin
+            System.out.println("Hatalı tarih formatı! Lütfen yyyy-MM-dd şeklinde girin.");
+            return;
         }
 
         System.out.print("Kategori ID: ");
@@ -123,12 +129,11 @@ public class PersonelController implements KullaniciController.Kullanici {
             String basimStr = scanner.nextLine();
 
             try {
-            kitap.setBasimYili(LocalDate.parse(basimStr)); // doğru formatta girildiyse
+                kitap.setBasimYili(LocalDate.parse(basimStr)); // doğru formatta girildiyse
             } catch (Exception e) {
-            System.out.println("❌ Hatalı tarih formatı! Lütfen yyyy-MM-dd şeklinde girin.");
-            return; // veya kullanıcıya tekrar deneme şansı verebilirsin
-        }
-
+                System.out.println("❌ Hatalı tarih formatı! Lütfen yyyy-MM-dd şeklinde girin.");
+                return; // veya kullanıcıya tekrar deneme şansı verebilirsin
+            }
 
             System.out.print("Yeni Yayınevi (" + kitap.getYayinevi() + "): ");
             kitap.setYayinevi(scanner.nextLine());
@@ -149,7 +154,6 @@ public class PersonelController implements KullaniciController.Kullanici {
 
         kitapService.kitapBulByIsbn(isbn).ifPresentOrElse(
                 kitap -> System.out.println(" Kitap bulundu: " + kitap.getKitapAdi()),
-                () -> System.out.println(" Kitap bulunamadı.")
-        );
+                () -> System.out.println(" Kitap bulunamadı."));
     }
 }

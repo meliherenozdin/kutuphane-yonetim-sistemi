@@ -13,17 +13,25 @@ public class KullaniciController {
 
     public void girisEkrani() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("=== Kütüphane Giriş Ekranı ===");
-        System.out.println("1. Üye Girişi");
-        System.out.println("2. Personel Girişi");
-        System.out.print("Seçiminiz: ");
-        String secim = scanner.nextLine();
+        while (true) {
+            System.out.println("\n=== Kütüphane Giriş Ekranı ===");
+            System.out.println("1. Üye Girişi");
+            System.out.println("2. Personel Girişi");
+            System.out.println("0. Çıkış");
+            System.out.print("Seçiminiz: ");
+            String secim = scanner.nextLine();
 
-        Kullanici kullanici = kullaniciFactory.olustur(secim);
-        if (kullanici != null) {
-            kullanici.menu();
-        } else {
-            System.out.println("Geçersiz seçim.");
+            if (secim.equals("0")) {
+                System.out.println("Program sonlandırılıyor...");
+                break;
+            }
+
+            Kullanici kullanici = kullaniciFactory.kullaniciOlustur(secim);
+            if (kullanici != null) {
+                kullanici.menu();
+            } else {
+                System.out.println("Geçersiz seçim veya kullanıcı bulunamadı.");
+            }
         }
     }
 

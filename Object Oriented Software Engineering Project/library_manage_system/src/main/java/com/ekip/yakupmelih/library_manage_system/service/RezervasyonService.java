@@ -8,8 +8,11 @@ import com.ekip.yakupmelih.library_manage_system.repository.RezervasyonRepositor
 import com.ekip.yakupmelih.library_manage_system.repository.UyeRepository;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RezervasyonService {
@@ -25,16 +28,62 @@ public class RezervasyonService {
         this.uyeRepository = uyeRepository;
     }
 
+    @Transactional
     public void kaydet(int uyeId, int kitapId) {
         Kitap kitap = kitapRepository.findById(kitapId).orElseThrow();
         Uye uye = uyeRepository.findById(uyeId).orElseThrow();
+
+        boolean zatenVar = rezervasyonRepository.findByUye(uye).stream()
+                .anyMatch(r -> r.getKitap().equals(kitap) && r.getDurum() == Rezervasyon.RezervasyonDurum.AKTIF);
+
+        if (zatenVar) {
+            throw new IllegalStateException("Bu kitap için zaten aktif bir rezervasyonunuz var.");
+        }
 
         Rezervasyon rezervasyon = new Rezervasyon();
         rezervasyon.setKitap(kitap);
         rezervasyon.setUye(uye);
         rezervasyon.setRezervasyonTarih(LocalDate.now());
-        rezervasyon.setDurum("Beklemede");
+        rezervasyon.setDurum(Rezervasyon.RezervasyonDurum.AKTIF);
+        rezervasyon.setAktif(true);
 
         rezervasyonRepository.save(rezervasyon);
+    }
+
+    public List<Rezervasyon> aktifRezervasyonlariGetir() {
+        return rezervasyonRepository.findByAktifTrue();
+    }
+
+    public List<Rezervasyon> durumunaGoreRezervasyonlariGetir(Rezervasyon.RezervasyonDurum durum) {
+        return rezervasyonRepository.findByDurum(durum);
+    }
+
+    public List<Rezervasyon> kitapBazliRezervasyonlariGetir(Kitap kitap) {
+        return rezervasyonRepository.findByKitap(kitap);
+    }
+
+    public Optional<Rezervasyon> rezervasyonBulById(int id) {
+        return rezervasyonRepository.findById(id);
+    }
+
+    public Rezervasyon rezervasyonGuncelle(int id, Rezervasyon yeniRezervasyon) {
+        return rezervasyonRepository.findById(id)
+                .map(r -> {
+                    r.setKitap(yeniRezervasyon.getKitap());
+                    r.setUye(yeniRezervasyon.getUye());
+                    r.setRezervasyonTarih(yeniRezervasyon.getRezervasyonTarih());
+                    r.setDurum(yeniRezervasyon.getDurum());
+                    r.setAciklama(yeniRezervasyon.getAciklama());
+                    r.setAktif(yeniRezervasyon.isAktif());
+                    return rezervasyonRepository.save(r);
+                })
+                .orElseThrow();
+    }
+
+    public void rezervasyonSil(int id) {
+        rezervasyonRepository.findById(id).ifPresent(r -> {
+            r.setAktif(false);
+            rezervasyonRepository.save(r);
+        });
     }
 }

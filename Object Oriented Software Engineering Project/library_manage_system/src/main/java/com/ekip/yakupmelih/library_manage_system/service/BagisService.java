@@ -8,8 +8,11 @@ import com.ekip.yakupmelih.library_manage_system.repository.KitapRepository;
 import com.ekip.yakupmelih.library_manage_system.repository.UyeRepository;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BagisService {
@@ -24,7 +27,8 @@ public class BagisService {
         this.kitapRepository = kitapRepository;
     }
 
-    public void bagisKaydet(int uyeId, int kitapId) {
+    @Transactional
+    public void bagisKaydet(int uyeId, int kitapId, int adet) {
         Uye uye = uyeRepository.findById(uyeId).orElseThrow();
         Kitap kitap = kitapRepository.findById(kitapId).orElseThrow();
 
@@ -32,7 +36,44 @@ public class BagisService {
         bagis.setUye(uye);
         bagis.setKitap(kitap);
         bagis.setBagisTarih(LocalDate.now());
-
+        bagis.setAktif(true);
+        bagis.setAdet(adet);
         bagisRepository.save(bagis);
+
+        kitap.setAdet(kitap.getAdet() + adet);
+        kitapRepository.save(kitap);
     }
+
+    public List<Bagis> aktifBagislariGetir() {
+        return bagisRepository.findByAktifTrue();
+    }
+
+    public List<Bagis> aciklamaIleBagisAra(String aciklama) {
+        return bagisRepository.findByAciklamaContainingIgnoreCase(aciklama);
+    }
+
+    public Optional<Bagis> bagisBulById(int id) {
+        return bagisRepository.findById(id);
+    }
+
+    public Bagis bagisGuncelle(int id, Bagis yeniBagis) {
+        return bagisRepository.findById(id)
+                .map(b -> {
+                    b.setUye(yeniBagis.getUye());
+                    b.setKitap(yeniBagis.getKitap());
+                    b.setBagisTarih(yeniBagis.getBagisTarih());
+                    b.setAciklama(yeniBagis.getAciklama());
+                    b.setAdet(yeniBagis.getAdet());
+                    b.setAktif(yeniBagis.isAktif());
+                    return bagisRepository.save(b);
+                })
+                .orElseThrow();
+    }
+
+    // public void bagisSil(int id) {
+    // bagisRepository.findById(id).ifPresent(b -> {
+    // b.setAktif(false);
+    // bagisRepository.save(b);
+    // });
+    // }
 }
