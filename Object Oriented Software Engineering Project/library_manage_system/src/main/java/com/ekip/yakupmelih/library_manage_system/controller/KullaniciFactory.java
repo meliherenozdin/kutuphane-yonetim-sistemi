@@ -81,4 +81,25 @@ public class KullaniciFactory {
             return null;
         }
     }
+
+    // Helper method for choosing different controllers
+    public Kullanici kontrolcuSecimi(String secim) {
+        try {
+            return switch (secim) {
+                case "1" -> context.getBean(KitapController.class);
+                case "2" -> context.getBean(UyeController.class);
+                case "3" -> context.getBean(YazarController.class);
+                case "4" -> context.getBean(KategoriController.class);
+                case "5" -> context.getBean(RafController.class);
+                case "6" -> context.getBean(OduncController.class);
+                case "7" -> context.getBean(RezervasyonController.class);
+                case "8" -> context.getBean(CezaController.class);
+                case "9" -> context.getBean(BagisController.class);
+                default -> null;
+            };
+        } catch (Exception e) {
+            System.out.println("Controller yükleme hatası: " + e.getMessage());
+            return null;
+        }
+    }
 }
