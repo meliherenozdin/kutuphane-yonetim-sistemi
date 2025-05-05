@@ -12,6 +12,7 @@ import com.ekip.yakupmelih.library_manage_system.service.OduncService;
 import com.ekip.yakupmelih.library_manage_system.service.RezervasyonService;
 import com.ekip.yakupmelih.library_manage_system.model.Uye;
 import com.ekip.yakupmelih.library_manage_system.model.Kitap;
+import com.ekip.yakupmelih.library_manage_system.model.Odunc;
 
 @Component
 public class UyeController implements KullaniciController.Kullanici {
@@ -90,7 +91,7 @@ public class UyeController implements KullaniciController.Kullanici {
                 .forEach(k -> System.out.printf("ID: %d - Ad: %s - Yazar: %s - ISBN: %s%n",
                         k.getKitapID(),
                         k.getKitapAdi(),
-                        k.getYazar().getYazarAdi(),
+                        k.getYazar() != null ? k.getYazar().getYazarAdi() : "Bilinmiyor",
                         k.getIsbn()));
     }
 
@@ -109,7 +110,7 @@ public class UyeController implements KullaniciController.Kullanici {
                 kitapService.kitapBulByIsbn(isbn).ifPresentOrElse(
                         kitap -> System.out.printf("Bulundu: %s - Yazar: %s%n",
                                 kitap.getKitapAdi(),
-                                kitap.getYazar().getYazarAdi()),
+                                kitap.getYazar() != null ? kitap.getYazar().getYazarAdi() : "Bilinmiyor"),
                         () -> System.out.println("Kitap bulunamadı."));
             }
             case "2" -> {
@@ -120,7 +121,7 @@ public class UyeController implements KullaniciController.Kullanici {
                     Kitap kitap = kitaplar.get(0);
                     System.out.printf("Bulundu: %s - Yazar: %s - ISBN: %s%n",
                             kitap.getKitapAdi(),
-                            kitap.getYazar().getYazarAdi(),
+                            kitap.getYazar() != null ? kitap.getYazar().getYazarAdi() : "Bilinmiyor",
                             kitap.getIsbn());
                 } else {
                     System.out.println("Kitap bulunamadı.");
@@ -138,30 +139,54 @@ public class UyeController implements KullaniciController.Kullanici {
 
     private void bagisYap() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Bağışlanan kitabın ID'sini girin: ");
-        int kitapId = Integer.parseInt(scanner.nextLine());
-        System.out.print("Bağışlanan kitap adedi: ");
-        int adet = Integer.parseInt(scanner.nextLine());
+        try {
+            System.out.print("Bağışlanan kitabın ID'sini girin: ");
+            int kitapId = Integer.parseInt(scanner.nextLine());
+            System.out.print("Bağışlanan kitap adedi: ");
+            int adet = Integer.parseInt(scanner.nextLine());
 
-        bagisService.bagisKaydet(uye.getUyeID(), kitapId, adet);
-        System.out.println("Bağış işlemi tamamlandı.");
+            bagisService.bagisKaydet(uye.getUyeID(), kitapId, adet);
+            System.out.println("Bağış işlemi tamamlandı.");
+        } catch (NumberFormatException e) {
+            System.out.println("Geçersiz değer. Lütfen sayısal bir değer giriniz.");
+        } catch (Exception e) {
+            System.out.println("Bağış işlemi sırasında bir hata oluştu: " + e.getMessage());
+        }
     }
 
     private void odunclariGoruntule() {
-        oduncService.findByUyeId(uye.getUyeID())
-                .forEach(odunc -> System.out.printf("Kitap ID: %d - Alınma: %s - Teslim: %s%n",
-                        odunc.getKitap().getKitapID(),
-                        odunc.getOduncAlmaTarih(),
-                        odunc.getGercekTeslimTarih()));
+        try {
+            List<Odunc> oduncler = oduncService.findByUyeId(uye.getUyeID());
+
+            if (oduncler.isEmpty()) {
+                System.out.println("Henüz ödünç aldığınız kitap bulunmamaktadır.");
+                return;
+            }
+
+            System.out.println("\n=== Ödünç Alınan Kitaplar ===");
+            oduncler.forEach(odunc -> System.out.printf("Kitap ID: %d - Kitap Adı: %s - Alınma: %s - Teslim: %s%n",
+                    odunc.getKitap() != null ? odunc.getKitap().getKitapID() : 0,
+                    odunc.getKitap() != null ? odunc.getKitap().getKitapAdi() : "Bilinmiyor",
+                    odunc.getOduncAlmaTarih(),
+                    odunc.getGercekTeslimTarih() != null ? odunc.getGercekTeslimTarih() : "Teslim edilmedi"));
+        } catch (Exception e) {
+            System.out.println("Ödünç bilgileri görüntülenirken bir hata oluştu: " + e.getMessage());
+        }
     }
 
     private void rezervasyonYap() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Rezerve edilecek kitabın ID'sini girin: ");
-        int kitapId = Integer.parseInt(scanner.nextLine());
+        try {
+            System.out.print("Rezerve edilecek kitabın ID'sini girin: ");
+            int kitapId = Integer.parseInt(scanner.nextLine());
 
-        rezervasyonService.kaydet(uye.getUyeID(), kitapId);
-        System.out.println("Rezervasyon tamamlandı.");
+            rezervasyonService.kaydet(uye.getUyeID(), kitapId);
+            System.out.println("Rezervasyon tamamlandı.");
+        } catch (NumberFormatException e) {
+            System.out.println("Geçersiz kitap ID. Lütfen sayısal bir değer giriniz.");
+        } catch (Exception e) {
+            System.out.println("Rezervasyon sırasında bir hata oluştu: " + e.getMessage());
+        }
     }
 
 }

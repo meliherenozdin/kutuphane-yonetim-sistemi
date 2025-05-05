@@ -48,7 +48,9 @@ public class OduncController {
                 case "5" -> oduncSil();
                 case "6" -> uyeOduncleriListele();
                 case "7" -> kitapIade();
-                case "8" -> { return; }
+                case "8" -> {
+                    return;
+                }
                 default -> System.out.println("Geçersiz seçim!");
             }
         }
@@ -63,67 +65,61 @@ public class OduncController {
         System.out.print("Ödünç ID: ");
         int id = Integer.parseInt(scanner.nextLine());
         oduncService.oduncGetir(id).ifPresentOrElse(
-            this::oduncYazdir,
-            () -> System.out.println("Ödünç bulunamadı!")
-        );
+                this::oduncYazdir,
+                () -> System.out.println("Ödünç bulunamadı!"));
     }
 
     private void yeniOduncEkle() {
         Odunc odunc = new Odunc();
-        
+
         System.out.print("Üye ID: ");
         int uyeId = Integer.parseInt(scanner.nextLine());
         uyeService.uyeBulById(uyeId).ifPresentOrElse(
-            uye -> {
-                odunc.setUye(uye);
-                
-                System.out.print("Kitap ID: ");
-                int kitapId = Integer.parseInt(scanner.nextLine());
-                kitapService.kitapGetir(kitapId).ifPresentOrElse(
-                    kitap -> {
-                        odunc.setKitap(kitap);
-                        oduncService.oduncKaydet(odunc);
-                        System.out.println("Ödünç başarıyla eklendi.");
-                    },
-                    () -> System.out.println("Kitap bulunamadı!")
-                );
-            },
-            () -> System.out.println("Üye bulunamadı!")
-        );
+                uye -> {
+                    odunc.setUye(uye);
+
+                    System.out.print("Kitap ID: ");
+                    int kitapId = Integer.parseInt(scanner.nextLine());
+                    kitapService.kitapGetir(kitapId).ifPresentOrElse(
+                            kitap -> {
+                                odunc.setKitap(kitap);
+                                oduncService.oduncKaydet(odunc);
+                                System.out.println("Ödünç başarıyla eklendi.");
+                            },
+                            () -> System.out.println("Kitap bulunamadı!"));
+                },
+                () -> System.out.println("Üye bulunamadı!"));
     }
 
     private void oduncGuncelle() {
         System.out.print("Güncellenecek Ödünç ID: ");
         int id = Integer.parseInt(scanner.nextLine());
-        
+
         oduncService.oduncGetir(id).ifPresentOrElse(
-            mevcutOdunc -> {
-                System.out.print("Yeni Üye ID: ");
-                int uyeId = Integer.parseInt(scanner.nextLine());
-                uyeService.uyeBulById(uyeId).ifPresentOrElse(
-                    uye -> {
-                        mevcutOdunc.setUye(uye);
-                        
-                        System.out.print("Yeni Kitap ID: ");
-                        int kitapId = Integer.parseInt(scanner.nextLine());
-                        kitapService.kitapGetir(kitapId).ifPresentOrElse(
-                            kitap -> {
-                                mevcutOdunc.setKitap(kitap);
-                                try {
-                                    oduncService.oduncGuncelle(id, mevcutOdunc);
-                                    System.out.println("Ödünç başarıyla güncellendi.");
-                                } catch (RuntimeException e) {
-                                    System.out.println("Ödünç güncellenirken hata oluştu!");
-                                }
+                mevcutOdunc -> {
+                    System.out.print("Yeni Üye ID: ");
+                    int uyeId = Integer.parseInt(scanner.nextLine());
+                    uyeService.uyeBulById(uyeId).ifPresentOrElse(
+                            uye -> {
+                                mevcutOdunc.setUye(uye);
+
+                                System.out.print("Yeni Kitap ID: ");
+                                int kitapId = Integer.parseInt(scanner.nextLine());
+                                kitapService.kitapGetir(kitapId).ifPresentOrElse(
+                                        kitap -> {
+                                            mevcutOdunc.setKitap(kitap);
+                                            try {
+                                                oduncService.oduncGuncelle(id, mevcutOdunc);
+                                                System.out.println("Ödünç başarıyla güncellendi.");
+                                            } catch (RuntimeException e) {
+                                                System.out.println("Ödünç güncellenirken hata oluştu!");
+                                            }
+                                        },
+                                        () -> System.out.println("Kitap bulunamadı!"));
                             },
-                            () -> System.out.println("Kitap bulunamadı!")
-                        );
-                    },
-                    () -> System.out.println("Üye bulunamadı!")
-                );
-            },
-            () -> System.out.println("Ödünç bulunamadı!")
-        );
+                            () -> System.out.println("Üye bulunamadı!"));
+                },
+                () -> System.out.println("Ödünç bulunamadı!"));
     }
 
     private void oduncSil() {
@@ -141,17 +137,16 @@ public class OduncController {
         System.out.print("Üye ID: ");
         int uyeId = Integer.parseInt(scanner.nextLine());
         uyeService.uyeBulById(uyeId).ifPresentOrElse(
-            uye -> {
-                List<Odunc> oduncler = oduncService.uyeOduncleriGetir(uyeId);
-                if (oduncler.isEmpty()) {
-                    System.out.println("Üyeye ait ödünç bulunamadı!");
-                } else {
-                    System.out.println("\n=== Üye Ödünçleri ===");
-                    oduncler.forEach(this::oduncYazdir);
-                }
-            },
-            () -> System.out.println("Üye bulunamadı!")
-        );
+                uye -> {
+                    List<Odunc> oduncler = oduncService.uyeOduncleriGetir(uyeId);
+                    if (oduncler.isEmpty()) {
+                        System.out.println("Üyeye ait ödünç bulunamadı!");
+                    } else {
+                        System.out.println("\n=== Üye Ödünçleri ===");
+                        oduncler.forEach(this::oduncYazdir);
+                    }
+                },
+                () -> System.out.println("Üye bulunamadı!"));
     }
 
     private void kitapIade() {
@@ -166,11 +161,18 @@ public class OduncController {
     }
 
     private void oduncYazdir(Odunc odunc) {
-        System.out.printf("ID: %d - Üye: %s %s - Kitap: %s - Durum: %s%n",
-            odunc.getOduncID(),
-            odunc.getUye().getUyeAdi(),
-            odunc.getUye().getUyeSoyad(),
-            odunc.getKitap().getKitapAdi(),
-            odunc.getDurum());
+        String uyeAdiSoyadi = (odunc.getUye() != null)
+                ? odunc.getUye().getUyeAdi() + " " + odunc.getUye().getUyeSoyad()
+                : "Bilinmiyor";
+
+        String kitapAdi = (odunc.getKitap() != null)
+                ? odunc.getKitap().getKitapAdi()
+                : "Bilinmiyor";
+
+        System.out.printf("ID: %d - Üye: %s - Kitap: %s - Durum: %s%n",
+                odunc.getOduncID(),
+                uyeAdiSoyadi,
+                kitapAdi,
+                odunc.getDurum());
     }
-} 
+}
