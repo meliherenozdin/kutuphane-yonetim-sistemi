@@ -8,7 +8,5 @@ import java.util.List;
 
 @Repository
 public interface YazarRepository extends JpaRepository<Yazar, Integer> {
-    List<Yazar> findByAktifTrue();
-
-    List<Yazar> findByYazarAdiContainingIgnoreCase(String yazarAdi);
+    List<Yazar> findByYazarAdiContaining(String yazarAdi);
 }

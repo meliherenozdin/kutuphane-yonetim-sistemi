@@ -18,7 +18,7 @@ public interface KitapRepository extends JpaRepository<Kitap, Integer> {
 
     List<Kitap> findByYazar(Yazar yazar);
 
-    Optional<Kitap> findByKitapAdiContainingIgnoreCase(String kitapAdi);
+    List<Kitap> findByKitapAdiContainingIgnoreCase(String kitapAdi);
 
     List<Kitap> findByAktifTrue();
 

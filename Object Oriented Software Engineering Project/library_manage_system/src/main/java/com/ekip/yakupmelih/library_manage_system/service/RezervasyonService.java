@@ -28,6 +28,19 @@ public class RezervasyonService {
         this.uyeRepository = uyeRepository;
     }
 
+    public List<Rezervasyon> tumRezervasyonlariGetir() {
+        return rezervasyonRepository.findAll();
+    }
+
+    public Optional<Rezervasyon> rezervasyonGetir(int id) {
+        return rezervasyonRepository.findById(id);
+    }
+
+    @Transactional
+    public Rezervasyon rezervasyonKaydet(Rezervasyon rezervasyon) {
+        return rezervasyonRepository.save(rezervasyon);
+    }
+
     @Transactional
     public void kaydet(int uyeId, int kitapId) {
         Kitap kitap = kitapRepository.findById(kitapId).orElseThrow();
@@ -60,6 +73,11 @@ public class RezervasyonService {
 
     public List<Rezervasyon> kitapBazliRezervasyonlariGetir(Kitap kitap) {
         return rezervasyonRepository.findByKitap(kitap);
+    }
+
+    public List<Rezervasyon> uyeRezervasyonlariGetir(int uyeId) {
+        Uye uye = uyeRepository.findById(uyeId).orElseThrow();
+        return rezervasyonRepository.findByUye(uye);
     }
 
     public Optional<Rezervasyon> rezervasyonBulById(int id) {

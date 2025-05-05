@@ -1,37 +1,27 @@
 package com.ekip.yakupmelih.library_manage_system.controller;
 
 import java.util.Scanner;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ekip.yakupmelih.library_manage_system.repository.KitapRepository;
 import com.ekip.yakupmelih.library_manage_system.service.BagisService;
 import com.ekip.yakupmelih.library_manage_system.service.CezaService;
 import com.ekip.yakupmelih.library_manage_system.service.KitapService;
 import com.ekip.yakupmelih.library_manage_system.service.OduncService;
 import com.ekip.yakupmelih.library_manage_system.service.RezervasyonService;
 import com.ekip.yakupmelih.library_manage_system.model.Uye;
-import com.ekip.yakupmelih.library_manage_system.repository.CezaRepository;
+import com.ekip.yakupmelih.library_manage_system.model.Kitap;
 
 @Component
 public class UyeController implements KullaniciController.Kullanici {
 
     private Uye uye;
 
-    @Autowired
     private final KitapService kitapService;
-
-    @Autowired
     private final CezaService cezaService;
-
-    @Autowired
     private final BagisService bagisService;
-
-    @Autowired
     private final OduncService oduncService;
-
-    @Autowired
     private final RezervasyonService rezervasyonService;
 
     public UyeController(
@@ -125,20 +115,23 @@ public class UyeController implements KullaniciController.Kullanici {
             case "2" -> {
                 System.out.print("Kitap Adı: ");
                 String kitapAdi = scanner.nextLine();
-                kitapService.kitapBulByAd(kitapAdi).ifPresentOrElse(
-                        kitap -> System.out.printf("Bulundu: %s - Yazar: %s - ISBN: %s%n",
-                                kitap.getKitapAdi(),
-                                kitap.getYazar().getYazarAdi(),
-                                kitap.getIsbn()),
-                        () -> System.out.println("Kitap bulunamadı."));
+                List<Kitap> kitaplar = kitapService.kitapAra(kitapAdi);
+                if (!kitaplar.isEmpty()) {
+                    Kitap kitap = kitaplar.get(0);
+                    System.out.printf("Bulundu: %s - Yazar: %s - ISBN: %s%n",
+                            kitap.getKitapAdi(),
+                            kitap.getYazar().getYazarAdi(),
+                            kitap.getIsbn());
+                } else {
+                    System.out.println("Kitap bulunamadı.");
+                }
             }
             default -> System.out.println("Geçersiz seçim.");
         }
     }
 
     private void cezalar() {
-
-        cezaService.getCezaByUyeId(uye.getUyeID())
+        cezaService.findByUyeId(uye.getUyeID())
                 .forEach(ceza -> System.out.printf("Ceza: %.2f ₺ - Tarih: %s%n",
                         ceza.getCezaMiktar(), ceza.getCezaTarih()));
     }
@@ -147,13 +140,15 @@ public class UyeController implements KullaniciController.Kullanici {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Bağışlanan kitabın ID'sini girin: ");
         int kitapId = Integer.parseInt(scanner.nextLine());
+        System.out.print("Bağışlanan kitap adedi: ");
+        int adet = Integer.parseInt(scanner.nextLine());
 
-        bagisService.bagisKaydet(uye.getUyeID(), kitapId);
+        bagisService.bagisKaydet(uye.getUyeID(), kitapId, adet);
         System.out.println("Bağış işlemi tamamlandı.");
     }
 
     private void odunclariGoruntule() {
-        oduncService.getOduncByUyeId(uye.getUyeID())
+        oduncService.findByUyeId(uye.getUyeID())
                 .forEach(odunc -> System.out.printf("Kitap ID: %d - Alınma: %s - Teslim: %s%n",
                         odunc.getKitap().getKitapID(),
                         odunc.getOduncAlmaTarih(),

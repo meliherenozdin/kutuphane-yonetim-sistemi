@@ -24,7 +24,11 @@ public class CezaService {
         this.uyeRepository = uyeRepository;
     }
 
-    public List<Ceza> getCezaByUyeId(int uyeId) {
+    public List<Ceza> tumCezalariGetir() {
+        return cezaRepository.findAll();
+    }
+
+    public List<Ceza> uyeCezalariGetir(int uyeId) {
         Uye uye = uyeRepository.findById(uyeId).orElseThrow();
         return cezaRepository.findByUye(uye);
     }
@@ -41,15 +45,20 @@ public class CezaService {
         return cezaRepository.findByCezaTarihBetween(start, end);
     }
 
-    public Optional<Ceza> cezaBulById(int id) {
+    public Optional<Ceza> cezaGetir(int id) {
         return cezaRepository.findById(id);
     }
 
+    public List<Ceza> findByUyeId(int uyeId) {
+        return cezaRepository.findByUye_UyeID(uyeId);
+    }
+
     @Transactional
-    public Ceza cezaEkle(Ceza ceza) {
+    public Ceza cezaKaydet(Ceza ceza) {
         return cezaRepository.save(ceza);
     }
 
+    @Transactional
     public Ceza cezaGuncelle(int id, Ceza yeniCeza) {
         return cezaRepository.findById(id)
                 .map(c -> {
@@ -64,6 +73,7 @@ public class CezaService {
                 .orElseThrow();
     }
 
+    @Transactional
     public void cezaSil(int id) {
         cezaRepository.findById(id).ifPresent(c -> {
             c.setAktif(false);

@@ -27,7 +27,7 @@ public class OduncService {
         this.kitapRepository = kitapRepository;
     }
 
-    public List<Odunc> getOduncByUyeId(int uyeId) {
+    public List<Odunc> findByUyeId(int uyeId) {
         Uye uye = uyeRepository.findById(uyeId).orElseThrow();
         return oduncRepository.findByUye(uye);
     }
@@ -60,7 +60,6 @@ public class OduncService {
 
         Uye uye = uyeRepository.findById(uyeId).orElseThrow();
 
-        // Kitap zaten bu üyeye ödünç verilmişse hata fırlat kaldıralabilir bu kısım
         boolean kitapZatenOduncte = oduncRepository.findByKitap(kitap).stream()
                 .anyMatch(o -> o.getUye().equals(uye) && o.getDurum() == Odunc.OduncDurum.AKTIF);
 
@@ -88,11 +87,6 @@ public class OduncService {
         if (odunc.getDurum() == Odunc.OduncDurum.TESLIM_EDILDI)
             throw new IllegalStateException("Kitap zaten iade edilmiş!");
 
-        // if (odunc.getDurum() != Odunc.OduncDurum.AKTIF)
-        // throw new IllegalStateException("Bu kitap zaten iade edilmiş.");
-        // Aralarındaki fark teslim edildiyi kontrol ederken yorumdaki kısım aktif
-        // dışlar gibisinden daha kapsamlı bir yapı
-
         Kitap kitap = odunc.getKitap();
         kitap.setAdet(kitap.getAdet() + 1);
         kitapRepository.save(kitap);
@@ -107,26 +101,56 @@ public class OduncService {
         return oduncRepository.save(odunc);
     }
 
-    public Odunc oduncGuncelle(int id, Odunc yeniOdunc) {
+    public List<Odunc> tumOduncleriGetir() {
+        return oduncRepository.findAll();
+    }
+
+    public Optional<Odunc> oduncGetir(int id) {
+        return oduncRepository.findById(id);
+    }
+
+    @Transactional
+    public Odunc oduncKaydet(Odunc odunc) {
+        return oduncRepository.save(odunc);
+    }
+
+    @Transactional
+    public Odunc oduncGuncelle(int id, Odunc odunc) {
         return oduncRepository.findById(id)
                 .map(o -> {
-                    o.setUye(yeniOdunc.getUye());
-                    o.setKitap(yeniOdunc.getKitap());
-                    o.setOduncAlmaTarih(yeniOdunc.getOduncAlmaTarih());
-                    o.setGercekTeslimTarih(yeniOdunc.getGercekTeslimTarih());
-                    o.setSonTeslimTarihi(yeniOdunc.getSonTeslimTarihi());
-                    o.setDurum(yeniOdunc.getDurum());
-                    o.setAciklama(yeniOdunc.getAciklama());
-                    o.setAktif(yeniOdunc.isAktif());
+                    o.setUye(odunc.getUye());
+                    o.setKitap(odunc.getKitap());
+                    o.setOduncAlmaTarih(odunc.getOduncAlmaTarih());
+                    o.setGercekTeslimTarih(odunc.getGercekTeslimTarih());
+                    o.setSonTeslimTarihi(odunc.getSonTeslimTarihi());
+                    o.setDurum(odunc.getDurum());
+                    o.setAciklama(odunc.getAciklama());
+                    o.setAktif(odunc.isAktif());
                     return oduncRepository.save(o);
                 })
                 .orElseThrow();
     }
 
+    @Transactional
     public void oduncSil(int id) {
         oduncRepository.findById(id).ifPresent(o -> {
             o.setAktif(false);
             oduncRepository.save(o);
         });
+    }
+
+    public List<Odunc> uyeOduncleriGetir(int uyeId) {
+        return oduncRepository.findByUye_UyeID(uyeId);
+    }
+
+    @Transactional
+    public Odunc kitapIade(int id) {
+        return oduncRepository.findById(id)
+                .map(o -> {
+                    o.setDurum(Odunc.OduncDurum.TESLIM_EDILDI);
+                    o.setGercekTeslimTarih(java.time.LocalDate.now());
+                    return oduncRepository.save(o);
+                })
+                .orElseThrow();
     }
 }

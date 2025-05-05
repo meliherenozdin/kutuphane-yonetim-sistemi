@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface RafRepository extends JpaRepository<Raf, String> {
+    List<Raf> findByRafNoContaining(String rafNo);
+
     List<Raf> findByAktifTrue();
 
     List<Raf> findByBolumContainingIgnoreCase(String bolum);

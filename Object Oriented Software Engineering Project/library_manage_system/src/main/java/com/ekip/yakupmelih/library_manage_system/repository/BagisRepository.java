@@ -11,4 +11,6 @@ public interface BagisRepository extends JpaRepository<Bagis, Integer> {
     List<Bagis> findByAktifTrue();
 
     List<Bagis> findByAciklamaContainingIgnoreCase(String aciklama);
+
+    List<Bagis> findByUye_UyeID(int uyeID);
 }

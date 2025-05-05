@@ -56,24 +56,43 @@ public class BagisService {
         return bagisRepository.findById(id);
     }
 
-    public Bagis bagisGuncelle(int id, Bagis yeniBagis) {
+    @Transactional
+    public Bagis bagisGuncelle(int id, Bagis bagis) {
         return bagisRepository.findById(id)
                 .map(b -> {
-                    b.setUye(yeniBagis.getUye());
-                    b.setKitap(yeniBagis.getKitap());
-                    b.setBagisTarih(yeniBagis.getBagisTarih());
-                    b.setAciklama(yeniBagis.getAciklama());
-                    b.setAdet(yeniBagis.getAdet());
-                    b.setAktif(yeniBagis.isAktif());
+                    b.setUye(bagis.getUye());
+                    b.setKitap(bagis.getKitap());
+                    b.setBagisTarih(bagis.getBagisTarih());
+                    b.setAdet(bagis.getAdet());
+                    b.setAciklama(bagis.getAciklama());
+                    b.setAktif(bagis.isAktif());
                     return bagisRepository.save(b);
                 })
                 .orElseThrow();
     }
 
-    // public void bagisSil(int id) {
-    // bagisRepository.findById(id).ifPresent(b -> {
-    // b.setAktif(false);
-    // bagisRepository.save(b);
-    // });
-    // }
+    @Transactional
+    public void bagisSil(int id) {
+        bagisRepository.findById(id).ifPresent(b -> {
+            b.setAktif(false);
+            bagisRepository.save(b);
+        });
+    }
+
+    public List<Bagis> tumBagislariGetir() {
+        return bagisRepository.findAll();
+    }
+
+    public Optional<Bagis> bagisGetir(int id) {
+        return bagisRepository.findById(id);
+    }
+
+    @Transactional
+    public Bagis bagisKaydet(Bagis bagis) {
+        return bagisRepository.save(bagis);
+    }
+
+    public List<Bagis> bagisciBagislariGetir(int bagisciId) {
+        return bagisRepository.findByUye_UyeID(bagisciId);
+    }
 }

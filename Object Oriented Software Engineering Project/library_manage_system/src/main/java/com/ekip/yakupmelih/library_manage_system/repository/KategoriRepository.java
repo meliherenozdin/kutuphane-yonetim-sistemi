@@ -8,7 +8,5 @@ import java.util.List;
 
 @Repository
 public interface KategoriRepository extends JpaRepository<Kategori, Integer> {
-    List<Kategori> findByAktifTrue();
-
-    List<Kategori> findByAciklamaContainingIgnoreCase(String aciklama);
+    List<Kategori> findByTuruContaining(String turu);
 }

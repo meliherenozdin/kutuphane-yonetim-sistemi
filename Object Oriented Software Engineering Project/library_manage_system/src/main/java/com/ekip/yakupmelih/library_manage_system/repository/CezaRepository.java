@@ -19,4 +19,6 @@ public interface CezaRepository extends JpaRepository<Ceza, Integer> {
     List<Ceza> findByOdunc(Odunc odunc);
 
     List<Ceza> findByCezaTarihBetween(LocalDate start, LocalDate end);
+
+    List<Ceza> findByUye_UyeID(int uyeID);
 }

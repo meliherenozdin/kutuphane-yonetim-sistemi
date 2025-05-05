@@ -17,4 +17,6 @@ public interface RezervasyonRepository extends JpaRepository<Rezervasyon, Intege
     List<Rezervasyon> findByKitap(Kitap kitap);
 
     List<Rezervasyon> findByAktifTrue();
+
+    List<Rezervasyon> findByUye_UyeID(int uyeID);
 }

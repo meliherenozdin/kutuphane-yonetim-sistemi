@@ -21,4 +21,6 @@ public interface OduncRepository extends JpaRepository<Odunc, Integer> {
     List<Odunc> findByKitap(Kitap kitap);
 
     List<Odunc> findBySonTeslimTarihiBefore(LocalDate tarih);
+
+    List<Odunc> findByUye_UyeID(int uyeID);
 }

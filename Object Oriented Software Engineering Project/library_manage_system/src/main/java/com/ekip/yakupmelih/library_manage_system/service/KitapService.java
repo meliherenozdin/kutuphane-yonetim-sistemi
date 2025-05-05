@@ -38,6 +38,61 @@ public class KitapService {
         return kitapRepository.findByKategoriAndAktifTrue(kategori);
     }
 
+    public Optional<Kitap> kitapGetir(int id) {
+        return kitapRepository.findById(id);
+    }
+
+    public Optional<Kitap> kitapGetirByIsbn(String isbn) {
+        return kitapRepository.findByIsbn(isbn);
+    }
+
+    public List<Kitap> kitapAra(String kitapAdi) {
+        return kitapRepository.findByKitapAdiContainingIgnoreCase(kitapAdi);
+    }
+
+    @Transactional
+    public List<Kitap> topluKitapKaydet(List<Kitap> kitaplar) {
+        return kitapRepository.saveAll(kitaplar);
+    }
+
+    @Transactional
+    public Kitap kitapKaydet(Kitap kitap) {
+        return kitapRepository.save(kitap);
+    }
+
+    @Transactional
+    public Kitap kitapGuncelle(int id, Kitap kitap) {
+        return kitapRepository.findById(id)
+                .map(k -> {
+                    k.setKitapAdi(kitap.getKitapAdi());
+                    k.setIsbn(kitap.getIsbn());
+                    k.setBasimYili(kitap.getBasimYili());
+                    k.setYayinevi(kitap.getYayinevi());
+                    k.setAdet(kitap.getAdet());
+                    k.setKategori(kitap.getKategori());
+                    k.setYazar(kitap.getYazar());
+                    k.setRaf(kitap.getRaf());
+                    k.setDurum(kitap.getDurum());
+                    k.setAciklama(kitap.getAciklama());
+                    k.setAktif(kitap.isAktif());
+                    return kitapRepository.save(k);
+                })
+                .orElseThrow();
+    }
+
+    @Transactional
+    public void kitapSil(int id) {
+        kitapRepository.findById(id).ifPresent(k -> {
+            k.setAktif(false);
+            kitapRepository.save(k);
+        });
+    }
+
+    @Transactional
+    public Kitap kitapEkle(Kitap kitap) {
+        return kitapRepository.save(kitap);
+    }
+
     public Optional<Kitap> kitapBulById(int id) {
         return kitapRepository.findById(id);
     }
@@ -46,47 +101,8 @@ public class KitapService {
         return kitapRepository.findByIsbn(isbn);
     }
 
-    public Optional<Kitap> kitapBulByAd(String kitapAdi) {
-        return kitapRepository.findByKitapAdiContainingIgnoreCase(kitapAdi);
-    }
-
     @Transactional
-    public List<Kitap> topluKitapEkle(List<Kitap> kitaplar) {
-        return kitapRepository.saveAll(kitaplar);
-    }
-
-    @Transactional
-    public List<Kitap> topluKitapGuncelle(List<Kitap> kitaplar) {
-        return kitapRepository.saveAll(kitaplar);
-    }
-
-    public Kitap kitapEkle(Kitap kitap) {
+    public Kitap guncelle(Kitap kitap) {
         return kitapRepository.save(kitap);
-    }
-
-    public Kitap kitapGuncelle(int id, Kitap yeniKitap) {
-        return kitapRepository.findById(id)
-                .map(k -> {
-                    k.setKitapAdi(yeniKitap.getKitapAdi());
-                    k.setIsbn(yeniKitap.getIsbn());
-                    k.setBasimYili(yeniKitap.getBasimYili());
-                    k.setYayinevi(yeniKitap.getYayinevi());
-                    k.setAdet(yeniKitap.getAdet());
-                    k.setKategori(yeniKitap.getKategori());
-                    k.setYazar(yeniKitap.getYazar());
-                    k.setRaf(yeniKitap.getRaf());
-                    k.setDurum(yeniKitap.getDurum());
-                    k.setAciklama(yeniKitap.getAciklama());
-                    k.setAktif(yeniKitap.isAktif());
-                    return kitapRepository.save(k);
-                })
-                .orElseThrow();
-    }
-
-    public void kitapSil(int id) {
-        kitapRepository.findById(id).ifPresent(k -> {
-            k.setAktif(false);
-            kitapRepository.save(k);
-        });
     }
 }
