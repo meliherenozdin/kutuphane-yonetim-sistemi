@@ -13,10 +13,13 @@ import com.ekip.yakupmelih.library_manage_system.service.OduncService;
 import com.ekip.yakupmelih.library_manage_system.service.RezervasyonService;
 import com.ekip.yakupmelih.library_manage_system.model.Personel;
 import com.ekip.yakupmelih.library_manage_system.model.Kitap;
+import com.ekip.yakupmelih.library_manage_system.model.Uye;
 import com.ekip.yakupmelih.library_manage_system.repository.KategoriRepository;
 import com.ekip.yakupmelih.library_manage_system.repository.RafRepository;
 import com.ekip.yakupmelih.library_manage_system.repository.YazarRepository;
 import com.ekip.yakupmelih.library_manage_system.controller.RaporlamaController;
+import com.ekip.yakupmelih.library_manage_system.iterator.UyeIterator;
+import com.ekip.yakupmelih.library_manage_system.iterator.AktifUyeIterator;
 
 @Component
 public class PersonelController implements KullaniciController.Kullanici {
@@ -33,6 +36,7 @@ public class PersonelController implements KullaniciController.Kullanici {
     private final YazarRepository yazarRepository;
     private final RafRepository rafRepository;
     private final RaporlamaController raporlamaController;
+    private final UyeIterator aktifUyeIterator;
 
     public PersonelController(
             KitapService kitapService,
@@ -43,7 +47,8 @@ public class PersonelController implements KullaniciController.Kullanici {
             KategoriRepository kategoriRepository,
             YazarRepository yazarRepository,
             RafRepository rafRepository,
-            RaporlamaController raporlamaController) {
+            RaporlamaController raporlamaController,
+            AktifUyeIterator aktifUyeIterator) {
         this.kitapService = kitapService;
         this.cezaService = cezaService;
         this.bagisService = bagisService;
@@ -53,6 +58,7 @@ public class PersonelController implements KullaniciController.Kullanici {
         this.yazarRepository = yazarRepository;
         this.rafRepository = rafRepository;
         this.raporlamaController = raporlamaController;
+        this.aktifUyeIterator = aktifUyeIterator;
     }
 
     public void setPersonel(Personel personel) {
@@ -68,7 +74,8 @@ public class PersonelController implements KullaniciController.Kullanici {
             System.out.println("3. Kitap Güncelle");
             System.out.println("4. Kitap Ara");
             System.out.println("5. Raporlama Sistemi");
-            System.out.println("6. Çıkış");
+            System.out.println("6. Aktif Üyeleri Listele");
+            System.out.println("7. Çıkış");
             System.out.print("Seçiminiz: ");
             String secim = scanner.nextLine();
 
@@ -78,7 +85,8 @@ public class PersonelController implements KullaniciController.Kullanici {
                 case "3" -> kitapGuncelle();
                 case "4" -> kitapAra();
                 case "5" -> raporlamaController.menu("personel");
-                case "6" -> {
+                case "6" -> aktifUyeleriListele();
+                case "7" -> {
                     return;
                 }
                 default -> System.out.println("Geçersiz seçim.");
@@ -180,5 +188,19 @@ public class PersonelController implements KullaniciController.Kullanici {
         kitapService.kitapBulByIsbn(isbn).ifPresentOrElse(
                 kitap -> System.out.println(" Kitap bulundu: " + kitap.getKitapAdi()),
                 () -> System.out.println(" Kitap bulunamadı."));
+    }
+
+    private void aktifUyeleriListele() {
+        System.out.println("\n=== Aktif Üyeler ===");
+        aktifUyeIterator.reset();
+
+        while (aktifUyeIterator.hasNext()) {
+            Uye uye = aktifUyeIterator.next();
+            System.out.printf("ID: %d - Ad Soyad: %s %s - Email: %s%n",
+                    uye.getUyeID(),
+                    uye.getUyeAdi(),
+                    uye.getUyeSoyad(),
+                    uye.getEmail());
+        }
     }
 }
