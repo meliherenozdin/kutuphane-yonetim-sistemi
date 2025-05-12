@@ -38,7 +38,9 @@ public class RafController {
                 case "3" -> yeniRafEkle();
                 case "4" -> rafGuncelle();
                 case "5" -> rafSil();
-                case "6" -> { return; }
+                case "6" -> {
+                    return;
+                }
                 default -> System.out.println("Geçersiz seçim!");
             }
         }
@@ -62,15 +64,15 @@ public class RafController {
 
     private void yeniRafEkle() {
         Raf raf = new Raf();
-        
+
         System.out.print("Raf No: ");
         raf.setRafNo(scanner.nextLine());
-        
+
         System.out.print("Açıklama: ");
         raf.setAciklama(scanner.nextLine());
-        
+
         raf.setAktif(true);
-        
+
         rafService.rafKaydet(raf);
         System.out.println("Raf başarıyla eklendi.");
     }
@@ -78,15 +80,15 @@ public class RafController {
     private void rafGuncelle() {
         System.out.print("Güncellenecek Raf No: ");
         String rafNo = scanner.nextLine();
-        
+
         Raf raf = new Raf();
         raf.setRafNo(rafNo);
-        
+
         System.out.print("Yeni Açıklama: ");
         raf.setAciklama(scanner.nextLine());
-        
+
         raf.setAktif(true);
-        
+
         try {
             rafService.rafGuncelle(rafNo, raf);
             System.out.println("Raf başarıyla güncellendi.");
@@ -108,7 +110,7 @@ public class RafController {
 
     private void rafYazdir(Raf raf) {
         System.out.printf("No: %s - Açıklama: %s%n",
-            raf.getRafNo(),
-            raf.getAciklama());
+                raf.getRafNo(),
+                raf.getAciklama());
     }
-} 
+}
